@@ -7,7 +7,7 @@ import { AuthContextProvider } from './Context/AuthContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <AuthContextProvider>
       <App />
     </AuthContextProvider>
