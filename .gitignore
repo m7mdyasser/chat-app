@@ -1,0 +1,14 @@
+# Ignore node_modules in both client and server
+/client/node_modules
+/server/node_modules
+
+# Ignore build directories
+/client/build
+/server/build
+
+# Environment files
+*.env
+
+# Other common ignores
+.DS_Store
+/coverage
