@@ -11,9 +11,10 @@ app.use(cors())
 app.use(routes)
 
 dotenv.config();
-const MongoAtlas = process.env.ATLAS_URI;
+// const MongoAtlas =`mongodb+srv://${process.env.MongoDB_UserName}:${process.env.MongoDB_Password}@cluster0.o4y6kq7.mongodb.net/chatApp?retryWrites=true&w=majority&appName=Cluster0`;
+const MongoAtlas =`mongodb+srv://my5033585:01287154954@cluster0.o4y6kq7.mongodb.net/chatApp?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose
-  .connect(MongoAtlas ,  {useNewUrlparser: true,useUnifiedTopology: true})
+  .connect(MongoAtlas)
   .then(() => {
     console.log("connected to database")
     console.log("==============================================");
