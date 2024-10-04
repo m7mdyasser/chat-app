@@ -3,13 +3,16 @@ import validator from "validator"
 import jwt from "jsonwebtoken"
 import { body, validationResult, matchedData } from "express-validator"
 import { hashPassword, comparePassword } from "../utils/cipher.mjs"
+import dotenv from 'dotenv';
 import { createRequire } from 'module';
 
+dotenv.config();
 // استخدام مفتاح jwt 
 // ======================================================================== jwt token ==================================================================================
 const createToken = (_id) => {
-  const jwtkey = "secrit"
+  const jwtkey = process.env.JWT_SECRET_KEY
   return jwt.sign({ _id }, jwtkey, { expiresIn: 60 * 60 })
+  
 }
 // ========================================================================##jwt token ==================================================================================
 // تسجيل الدخول لاول مره register
