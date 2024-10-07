@@ -20,7 +20,8 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-input-emoji": "^5.9.0",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.25.1",
+    "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

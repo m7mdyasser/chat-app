@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { getRequest, baseUrl, postRequest } from "../Utils/Services";
+import { io } from "socket.io-client"; // socket.io-client import
 
 export const ChatContext = createContext();
 
@@ -14,8 +15,52 @@ export const ChatContextProvider = ({ children, user }) => {
   const [messagesError, setMessagesError] = useState(null);
   const [sendTextMessageError, setSendTextMessageError] = useState(null);
   const [newMessage, setNewMessage] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-
+  // ========================================================================Socket.io ==================================================================================
+  useEffect(() => {
+    // الاتصال بالسيرفر
+    const Socket = io("http://localhost:3000"); // العنوان يجب أن يتطابق مع السيرفر
+    setSocket(Socket)
+    console.log("==============================================");
+    console.log("Connecting to Socket.io ");
+    console.log("==============================================");
+    return () => {
+      Socket.disconnect();
+    };
+  }, [user]);
+  //تحديد المستخدمين الموجودين(online)
+  //وتخزين المعرف الخاص بهم فى (state)
+  useEffect(() => {
+    if (socket === null) return;
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", (OnlineUsers) => {
+      setOnlineUsers(OnlineUsers);
+    });
+    return () => {
+      socket.off("getOnlineUsers");
+    };
+  }, [socket]);
+  // send messages 
+  useEffect(() => {
+    if (socket === null) return;
+    const recipientId = currentChat?.members.find((id) => id !== user?._id);
+    socket.emit("sendMessage", { ...newMessage, recipientId });
+  }, [newMessage]);
+  // receive messages
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getMessage", (res) => {
+      if (currentChat?._id !== res.chatId) return;
+      setMessages((prev) => [...prev, res]);
+    });
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, currentChat]);
+  
+  // ========================================================================##Socket.io ==================================================================================
   // تحديد المستخدمين المحتمل انشاء محادثه معهم
   // ========================================================================get Potential Chats ==================================================================================
   useEffect(() => {
@@ -129,7 +174,8 @@ export const ChatContextProvider = ({ children, user }) => {
         isMessagesLoading,
         messagesError,
         currentChat,
-        sendTextMessage
+        sendTextMessage,
+        onlineUsers
       }}>
       {children}
     </ChatContext.Provider>
