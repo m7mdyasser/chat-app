@@ -32,4 +32,4 @@ const Chat = () => {
   </Container>);
 }
 
-export default Chat;
+export default Chat ;

@@ -5,6 +5,8 @@ import routes from "../Routes/index.mjs"
 import dotenv from 'dotenv';
 import { Server } from 'socket.io'
 import http from 'http'
+import jwt from "jsonwebtoken"
+
 
 const app = express()
 app.use(express.json())
@@ -41,11 +43,11 @@ io.on("connection", (socket) => {
     );
     if (user) {
       io.to(user.socketId).emit("getMessage", message);
-      // io.to(user.socketId).emit("getNotification", {
-      // senderId: message.senderId,
-      // isRead:false,
-      // date:new Date(),
-      // });
+      io.to(user.socketId).emit("getNotification", {
+      senderId: message.senderId,
+      isRead:false,
+      date:new Date(),
+      });
     }
   });
   // قطع اتصال المستخدمين الذين لم يعودو متصلين 
@@ -91,3 +93,34 @@ server.listen(PORT, () => {
   console.log(`reunning on PORT ${PORT}`);
   console.log("==============================================");
 })
+
+
+// ========================================================================test ==================================================================================
+// Middleware للتحقق من التوكن
+function verifyToken(req, res, next) {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    console.log('No token provided');
+    return res.status(403).json({ message: 'No token provided' });
+  }
+
+  // التحقق من التوكن
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) {
+    console.log('Unauthorized');
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // تخزين معلومات المستخدم في الطلب
+    req.user = decoded;
+    next();
+  });
+}
+
+// حماية المسار
+app.get('/api/protected', verifyToken, (req, res) => {
+console.log('accepted token');
+  res.json({ message: 'This is a protected route', user: req.user });
+});
+// ========================================================================##test ==================================================================================

@@ -3,13 +3,11 @@ import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap"
 import { AuthContext } from "../Context/AuthContext";
 const Login = () => {
   const { loginInfo, loginUser, updateLoginInfo, loginError, isLoginLoading } = useContext(AuthContext)
-
   return (
     <>
       <Form onSubmit={loginUser}>
         <Row style={{ height: "100vh", justifyContent: "center", paddingTop: "10%" }}>
           <Col xs={6}>
-
             <Stack gap={3}>
               <h2>Login</h2>
               <Form.Control type="email" placeholder="Email" onChange={(e) => updateLoginInfo({ ...loginInfo, email: e.target.value })} />
@@ -25,4 +23,4 @@ const Login = () => {
     </>
   );
 }
-export default Login;
+export default Login ;
