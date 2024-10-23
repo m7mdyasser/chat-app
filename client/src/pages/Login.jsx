@@ -1,8 +1,11 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap"
 import { AuthContext } from "../Context/AuthContext";
+import { useTheme } from "@mui/material";
 const Login = () => {
   const { loginInfo, loginUser, updateLoginInfo, loginError, isLoginLoading } = useContext(AuthContext)
+  const theme = useTheme();
+
   return (
     <>
       <Form onSubmit={loginUser}>

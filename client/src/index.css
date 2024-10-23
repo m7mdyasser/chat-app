@@ -1,17 +1,26 @@
 body {
-color : white;
-background-color: #282828;
+  color: white;
+  background-color: #263159;
 }
 
-/* All users */
-.all-users {
-  display: flex;
-  margin-bottom: 1rem;
+.scroll-container {
+  overflow-y: scroll;
 }
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+
 
 .single-user {
   background: rgb(0, 213, 255);
-  
   cursor: pointer;
   padding: 5px 7px;
   border-radius: 10px;
@@ -21,7 +30,6 @@ background-color: #282828;
 
 /* User Card */
 .user-card {
-  
   position: relative;
   border-bottom: 1px solid rgb(100, 100, 100);
   width: 380px;
@@ -71,7 +79,7 @@ background-color: #282828;
   align-items: center;
   justify-content: center;
   padding: 0.75rem;
-  
+
   background: rgb(30, 30, 30);
 }
 
@@ -83,7 +91,6 @@ background-color: #282828;
 }
 
 .message {
-  
   background: #282828;
   padding: 0.75rem;
   border-radius: 5px;
@@ -91,7 +98,6 @@ background-color: #282828;
 }
 
 .message.self {
-  
   background: #00bd9b;
 }
 
@@ -110,7 +116,7 @@ background-color: #282828;
 .send-btn {
   border: none;
   background: rgba(72, 112, 223, 1);
-  
+
   height: 40px;
   width: 40px;
   border-radius: 50%;
@@ -122,7 +128,6 @@ background-color: #282828;
 }
 
 .notifications-icon {
-  
   cursor: pointer;
   position: relative;
   margin-right: 1rem;
@@ -134,10 +139,11 @@ background-color: #282828;
   position: absolute;
   top: 2rem;
   right: 0;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
     rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   background: #181d31;
-  
+
   z-index: 5;
 }
 
