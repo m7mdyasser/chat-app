@@ -1,5 +1,5 @@
 import { useFetchRecipientUser } from "../../Hooks/useFetchRecipient"
-import avatar from '../../assets/undraw_female_avatar_efig.svg'
+import avatar from '../../assets/vector.jpg'
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../Context/ChatContext";
 import { useFetchLatestMessage } from "../../Hooks/useFetchLatestMessage";
@@ -9,7 +9,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 
 function UserChat({ chat, user }) {
   const [date, setDate] = useState(null)
-  const [currentRecipient , setCurrentRecipient ] = useState(false)
+  const [currentRecipient, setCurrentRecipient] = useState(false)
   const { recipientUser } = useFetchRecipientUser(chat, user)
   const { onlineUsers, notifications, markUserNotificationsAsRead, currentChat } = useContext(ChatContext)
   const { latestMessage } = useFetchLatestMessage(chat)
@@ -18,9 +18,9 @@ function UserChat({ chat, user }) {
   const thisUserNotifications = unreadNotifications?.filter((n) => n.senderId == recipientUser?._id)
   const isOnline = onlineUsers?.some((user) => user?.userId === recipientUser?._id)
 
-useEffect(()=>{
-  setCurrentRecipient(currentChat?.members[0] === recipientUser?._id || currentChat?.members[1] === recipientUser?._id)
-},[currentChat , recipientUser?._id ])
+  useEffect(() => {
+    setCurrentRecipient(currentChat?.members[0] === recipientUser?._id || currentChat?.members[1] === recipientUser?._id)
+  }, [currentChat, recipientUser?._id])
 
   const truncateText = (text) => {
     let shortText = text.substring(0, 30);
@@ -49,12 +49,12 @@ useEffect(()=>{
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      color: "rgb(110, 127, 128)",
+      color: theme.palette.primary.text,
       height: "70px",
       padding: "5px 15px",
-      backgroundColor: currentRecipient ? "rgba(65,159,217,255)" : "white",
+      backgroundColor: currentRecipient ? theme.palette.third.background2Clicked : theme.palette.primary.background2,
       '&:hover': {
-        backgroundColor: currentRecipient ? "rgba(65,159,217,255)" : 'rgba(241,241,241,1)', // تغيير اللون عند التمرير
+        backgroundColor: currentRecipient ? theme.palette.third.background2Clicked : theme.palette.secondary.background2Hover, // تغيير اللون عند التمرير
         cursor: 'pointer', // تغيير شكل المؤشر عند التمرير
       },
     }} onClick={() => {
@@ -63,24 +63,43 @@ useEffect(()=>{
       }
     }}>
 
-      <Box sx={{ display: "flex", gap: "8px" ,height:"100%",width:"100%"}}>
-        <Box sx={{ position: "relative",display:"flex",justifyContent:"center",alignItems:"center" }} >
-          <img src={avatar} height="50px" />
-          <span className={isOnline ? "user-online" : ""}></span>
+      <Box sx={{ display: "flex", gap: "8px", height: "100%", width: "100%", }}>
+        <Box sx={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", }} >
+          <img style={{ borderRadius: '50%' }} src={avatar} height="50px" />
+          <span style={{
+            width: "14px",
+            height: "14px",
+            backgroundColor: isOnline ? currentRecipient ? theme.palette.primary.whiteText : theme.palette.primary.notification : "transparent",
+            borderRadius: "50%",
+            border: "2px solid",
+            borderColor: isOnline ? currentRecipient ? theme.palette.third.background2Clicked : theme.palette.primary.background2 : "transparent",
+            position: "absolute",
+            right: "-2px",
+            bottom: "4px"
+          }}></span>
         </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column",justifyContent:"center", height: "100%", gap:"8px",width:"100%" }}>
-          <Box sx={{fontWeight:"bold" , color:currentRecipient ? "white" : "#004040"  }} >{recipientUser?.name}</Box>
-          <Typography sx={{fontSize:"14px" ,  color:currentRecipient ? "white" : "#004040"}}>{latestMessage?.text && (<span>{truncateText(latestMessage?.text)}</span>)}</Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", gap: "8px", width: "100%" }}>
+          <Box sx={{ fontWeight: "bold", color: currentRecipient ? theme.palette.primary.whiteText : theme.palette.primary.main }} >{recipientUser?.name}</Box>
+          <Typography sx={{ fontSize: "14px", color: currentRecipient ? theme.palette.primary.whiteText : theme.palette.primary.text }}>{latestMessage?.text && (<span>{truncateText(latestMessage?.text)}</span>)}</Typography>
         </Box>
-
       </Box>
 
-      <Box sx={{color:currentRecipient ? "white" : "#004040", display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-end", gap: "5px", width: "100px", height: "100%" }} >
+      <Box sx={{ color: currentRecipient ? theme.palette.primary.whiteText : theme.palette.primary.text, display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-end", gap: "5px", width: "100px", height: "100%" }} >
         <Box sx={{ fontSize: "12px" }}>
           {date}
         </Box>
-        <Box sx={{ width: "20px", height: "20px", display: "flex", justifyContent: "center", alignItems: "center", color: "white", backgroundColor: thisUserNotifications?.length > 0 ? "rgba(65,159,217,255)" : " transparent", borderRadius: "50%", fontSize: "12px" }} className={thisUserNotifications?.length > 0 ? "this-user-notifications" : ""}>
+        <Box sx={{
+          width: "20px",
+          height: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "white",
+          backgroundColor: thisUserNotifications?.length > 0 ? theme.palette.primary.notification : " transparent",
+          borderRadius: "50%",
+          fontSize: "12px"
+        }} >
           {thisUserNotifications?.length > 0 ? thisUserNotifications?.length : ""}
         </Box>
       </Box>

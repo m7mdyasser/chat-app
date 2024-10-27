@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap"
 import { AuthContext } from "../Context/AuthContext";
-import { useTheme } from "@mui/material";
+import { useTheme ,Typography } from "@mui/material";
 const Register = () => {
 const {registerInfo , updateRegisterInfo ,registerUser , registerError ,isRegisterLoading } = useContext(AuthContext)
 const theme = useTheme();
@@ -13,7 +13,7 @@ const theme = useTheme();
           <Col xs={6}>
 
             <Stack gap={3}>
-              <h2>Register</h2>
+              <Typography variant="h4" sx={{textAlign:"center"}}>Register</Typography>
               <Form.Control type="text" placeholder="Name" onChange={(e) => updateRegisterInfo({ ...registerInfo, name: e.target.value.trim() })}  />
               <Form.Control type="email" placeholder="Email" onChange={(e) => updateRegisterInfo({ ...registerInfo, email: e.target.value })} />
               <Form.Control type="password" placeholder="Password" onChange={(e) => updateRegisterInfo({ ...registerInfo, password: e.target.value })} />

@@ -4,21 +4,21 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from './components/Navbar';
-import { useContext, useState } from 'react';
+import { useContext} from 'react';
 import { AuthContext } from './Context/AuthContext';
 import { ChatContextProvider } from './Context/ChatContext';
-import { ThemeProvider, createTheme } from "@mui/material";
-import { getDesignTokens } from './components/Theme/Theme';
+import { ThemeContext } from './Context/Theme/Theme'
+import { ThemeProvider } from "@mui/material";
 function App() {
-  const [colorTheme, setColorTheme] = useState(localStorage.getItem("Theme") || "light")
   const { user } = useContext(AuthContext)
-
-  const theme = createTheme(getDesignTokens(colorTheme));
+  const { theme } = useContext(ThemeContext)
+  // console.log(theme.palette.primary.background);
+  document.body.style.backgroundColor = theme.palette.primary.background
   return (
     <ChatContextProvider user={user} >
-      <ThemeProvider theme={theme} >
+        <ThemeProvider theme={theme} >
         <NavBar />
-        <div style={{ height: "calc(100% - 40px) " }} >
+        <div style={{ height: "calc(100% - 35px) " }}>
           <Routes>
             <Route path='/' element={user ? <Chat /> : <Login />} />
             <Route path='/login' element={user ? <Chat /> : <Login />} />
@@ -26,7 +26,7 @@ function App() {
             <Route path='/*' element={<Navigate to='/' />} />
           </Routes >
         </div>
-      </ThemeProvider>
+        </ThemeProvider>
     </ChatContextProvider>
   )
 }

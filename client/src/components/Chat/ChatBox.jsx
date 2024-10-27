@@ -20,16 +20,15 @@ const ChatBox = () => {
   const [showPicker, setShowPicker] = useState(false)
   const [emoji, setEmoji] = useState('')
   const scroll = useRef()
+  const scrollContainerRef = useRef(null);
+  const textareaRef = useRef(null);
   const theme = useTheme();
 
-  // const onEmojiClick = (event, emojiObject) => {
-  // console.log(emojiObject.emoji);
-  //   // setTextMessage(textMessage + emojiObject.emoji);
-  // };
-  useEffect(()=>{
-    setTextMessage(textMessage + emoji )
-  },[emoji])
-  
+
+  useEffect(() => {
+    setTextMessage(textMessage + emoji)
+  }, [emoji])
+
   useEffect(() => {
     setTimeout(() => {
       scroll.current?.scrollIntoView({ behavior: "smooth" })
@@ -73,32 +72,49 @@ const ChatBox = () => {
   return (
 
 
-    <Stack sx={{ height: "100%", width: "100%", backgroundColor: "transparent", alignItems: "flex-start" }}  >
+    <Stack sx={{ height: "100%", width: "100%", alignItems: "flex-start" }}  >
 
 
 
-      <Box sx={{ height: "60px", width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "white", color: "black", borderWidth: " 0 0 1px 0", borderColor: "rgba(231,231,231,255)", borderStyle: "solid" }}>
+      <Box sx={{
+        height: "60px",
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: theme.palette.primary.background2,
+        borderWidth: " 0 0 1px 0",
+        borderColor: theme.palette.primary.border,
+        borderStyle: "solid"
+      }}>
         <Box sx={{ ml: 2, display: "flex", flexDirection: "column" }}>
-          <Typography sx={{ fontWeight: "bold" }}>{recipientUser.name}</Typography>
-          <Typography sx={{ color: "#777" }}>last seen recently</Typography>
+          <Typography sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>{recipientUser.name}</Typography>
+          <Typography sx={{ color: theme.palette.primary.text }}>last seen recently</Typography>
         </Box>
         <Stack direction="row-reverse" spacing={1}>
-          <IconButton >
+          <IconButton sx={{ color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }} >
             <MoreVertIcon />
           </IconButton>
-          <IconButton >
+          <IconButton sx={{ color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }}>
             <ContactsIcon />
           </IconButton>
-          <IconButton >
+          <IconButton sx={{ color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }}>
             <PhoneIcon />
           </IconButton>
-          <IconButton >
+          <IconButton sx={{ color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }}>
             <SearchIcon />
           </IconButton>
         </Stack>
       </Box>
 
-      <Stack className="scroll-container" direction={"column-reverse"} sx={{ flex: "1", padding: "0 80px 10px ", width: "100%", backgroundColor: "#263159", overflow: "scroll" }}>
+
+
+
+
+
+
+      <Stack direction={"column-reverse"} sx={{ flex: "1", padding: "0 80px 10px ", width: "100%", backgroundColor: theme.palette.primary.background, overflowY: "scroll", overflowX: "hidden" }}>
+
         <Stack gap={1}>
           {messages &&
             messages.map((message, index) => (
@@ -106,9 +122,10 @@ const ChatBox = () => {
                 key={index}
                 ref={index === messages.length - 1 ? scroll : null}
                 sx={{ alignItems: message?.senderId === user?._id ? "flex-end " : "flex-start", }}>
-                <Stack sx={{ backgroundColor: message?.senderId === user?._id ? "rgba(231,245,213,255)" : "rgba(255,255,255,255)", color: "black", padding: "4px 14px", borderRadius: "10px", alignItems: message?.senderId === user?._id ? "flex-end" : "flex-start" }}>
-                  <Box sx={{ fontSize: "16px" }}  >{message.text}</Box>
-                  <Box sx={{ fontSize: "12px", lineHeight: "1", color: "#777" }}  >{Date(message.createdAt)}</Box>
+                <Stack sx={{ maxWidth: "400px", backgroundColor: message?.senderId === user?._id ? theme.palette.primary.selfMessage : theme.palette.primary.nonSelfMessage, color: theme.palette.primary.main, padding: "4px 14px", borderRadius: "10px", alignItems: message?.senderId === user?._id ? "flex-end" : "flex-start" }}>
+                  <Box className="long-text" sx={{ fontSize: "16px", display: "flex", overflow: "hidden", flexWrap: "wrap", width: "100%", }}  >{message.text}</Box>
+                  <style>{`.long-text {word-break: break-all;}`}</style>
+                  <Box sx={{ fontSize: "12px", lineHeight: "1", color: theme.palette.primary.text }}  >{Date(message.createdAt)}</Box>
                 </Stack>
 
               </Stack>
@@ -121,28 +138,65 @@ const ChatBox = () => {
 
 
       <Box sx={{ width: "100%", position: "relative" }}>
-        <input
-          onKeyDown={(e) => { e.key === 'Enter' && sendTextMessage(textMessage, user, currentChat._id, setTextMessage) }}
+        <textarea
+          ref={textareaRef}
+          rows="1"
+          onKeyDown={(e) => { if (e.key === 'Enter') { sendTextMessage(textMessage, user, currentChat._id, setTextMessage,); textareaRef.current.style.height = 'auto'; e.preventDefault(); } }}
           value={textMessage}
-          onChange={(e) => setTextMessage(e.target.value)}
+          onChange={(e) => {
+            setTextMessage(e.target.value);
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+          }}
           placeholder="Write a message..."
-          style={{ width: "100%", height: "45px", outline: "none", padding: "5px 50px", border: "none", borderWidth: "1px 0 0  0", borderColor: "rgba(231,231,231,255)", borderStyle: "solid" }} />
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            width: "100%",
+            height: "auto",
+            outline: "none",
+            padding: "10px 50px",
+            border: "none",
+            borderWidth: "1px 0 0  0",
+            backgroundColor: theme.palette.primary.background2,
+            color: theme.palette.primary.main,
+            borderColor: theme.palette.primary.border,
+            borderStyle: "solid",
+            resize: "none",
+            overflow: "hidden",
+          }} />
+            <style>
+            {`
+          textarea::placeholder {
+            padding:0 0 0 4px ;
+            line-height: 120% ;
+            opacity: 0.8;
+            color:${theme.palette.primary.text}
+          }
+        `}
+          </style>
         <IconButton
           onClick={() => sendTextMessage(textMessage, user, currentChat._id, setTextMessage)}
-          sx={{ position: "absolute", top: "50%", right: "10px", transform: 'translateY(-50%)' }} >
+          sx={{ position: "absolute", top: "50%", right: "10px", transform: 'translateY(-50%)',color:theme.palette.primary.sendIcon  }} >
           <SendRoundedIcon />
         </IconButton>
         <IconButton
           onClick={() => setShowPicker(!showPicker)}
-          sx={{ position: "absolute", top: "50%", left: "0", transform: 'translateY(-50%)' }} >
+          sx={{ position: "absolute",
+          top: "50%",
+          left: "0",
+          transform: 'translateY(-50%)',
+          color: theme.palette.primary.text,
+          '&:hover': { color: theme.palette.secondary.textHover}
+          }} >
           <SentimentSatisfiedAltRoundedIcon />
         </IconButton>
         {showPicker && <Box sx={{ position: 'absolute', bottom: "50px", left: "0" }}>
           <EmojiPicker
-          searchDisabled
-          lazyLoadEmojis ={false}
-          emojiStyle="twitter"
-          onEmojiClick={(e) => {setEmoji(e.emoji)}} />
+            searchDisabled
+            lazyLoadEmojis={false}
+            emojiStyle="twitter"
+            onEmojiClick={(e) => { setEmoji(e.emoji) }} />
         </Box>}
       </Box>
     </Stack>

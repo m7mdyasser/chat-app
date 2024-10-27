@@ -9,6 +9,8 @@ export const ChatContextProvider = ({ children, user }) => {
   const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
   const [userChatsError, setUserChatsError] = useState(null);
   const [potentialChats, setPotentialChats] = useState([]);
+  const [searchedPotentialChats, setSearchedPotentialChats] = useState([])
+  const [searchInputValue, setSearchInputValue] = useState("")
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
@@ -19,6 +21,10 @@ export const ChatContextProvider = ({ children, user }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [displayUserChats, setDisplayUserChats] = useState(true)
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+
   // ========================================================================Socket.io ==================================================================================
   useEffect(() => {
     // الاتصال بالسيرفر
@@ -168,6 +174,7 @@ export const ChatContextProvider = ({ children, user }) => {
       return console.log("Error creating chat", response);
     }
     setUserChats((prev) => [...prev, response]);
+    setCurrentChat(response)
   }, []);
   // ========================================================================##create New Chat ==================================================================================
   // ========================================================================Notification session ==================================================================================
@@ -210,6 +217,29 @@ export const ChatContextProvider = ({ children, user }) => {
 
   }, [])
   // ========================================================================##Notification session ==================================================================================
+  // ========================================================================SearchBar functions==================================================================================
+  const searchBarFocus = useCallback((setFocus) => {
+    setFocus(true)
+    setDisplayUserChats(false)
+  }, [])
+  const searchBarBlur = useCallback((setFocus, searchBar) => {
+    setFocus(false)
+    setTimeout(() => {
+      setDisplayUserChats(true)
+    }, 500);
+    if (searchBar.value != '') {
+      searchBar.focus()
+    }
+  }, [])
+  useEffect(() => {
+    setSearchedPotentialChats(potentialChats)
+  }, [potentialChats])
+
+  useEffect(() => {
+    const filter = potentialChats.filter((chat) => chat.name.toLowerCase().includes(searchInputValue))
+    setSearchedPotentialChats(filter)
+  }, [searchInputValue])
+  // ========================================================================##SearchBar functions==================================================================================
   // ========================================================================test ==================================================================================
 
   const testToken = useCallback(async () => {
@@ -244,7 +274,14 @@ export const ChatContextProvider = ({ children, user }) => {
         allUsers,
         markAllNotificationsAsRead,
         markNotificationAsRead,
-        markUserNotificationsAsRead
+        markUserNotificationsAsRead,
+        searchBarFocus,
+        searchBarBlur,
+        displayUserChats,
+        setSearchInputValue,
+        searchedPotentialChats,
+        setOpenDrawer,
+        openDrawer
       }}>
       {children}
     </ChatContext.Provider>

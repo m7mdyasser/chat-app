@@ -1,90 +1,50 @@
 import { Box, IconButton, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import ScrollBar from './ScrollBar';
+import { ChatContext } from '../../Context/ChatContext';
 
 
 const SideBar = ({ children }) => {
-  const [top, setTop] = useState(`0`)
-  const [height, setHeight] = useState('0')
+  const { searchBarFocus, searchBarBlur, setSearchInputValue ,currentChat ,setOpenDrawer } = useContext(ChatContext)
   const [focus, setFocus] = useState(false)
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [scrollBarStartY, setScrollBarStartY] = useState(0);
+  const [inputValue , setInputValue ] = useState("")
   const scrollContainerRef = useRef(null);
-  const scrollBarRef = useRef(null);
   const Search = useRef(null)
   const theme = useTheme();
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef?.current;
-    const scrollBar = scrollBarRef?.current;
-    setTimeout(() => {
-      scrollContainer?.scrollHeight / scrollContainer?.clientHeight <= 1 ? null : setHeight((scrollContainer?.clientHeight / scrollContainer?.scrollHeight) * 100 + '%');
-    }, 400);
-    const handleScroll = () => {
-      const scrollPosition = scrollContainer.scrollTop;
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      const scrollPercentage = scrollPosition / maxScroll;
-      
-      setTop(scrollPosition + scrollPercentage * (scrollContainer.clientHeight - scrollBar.offsetHeight) + 'px')
-      setHeight((scrollContainer?.clientHeight / scrollContainer?.scrollHeight) * 100 + '%');
-    };
-    const handleMouseDown = (e) => {
-      setIsDragging(true);
-      setStartY(e.clientY);
-      setScrollBarStartY(Math.min(scrollBar.offsetTop, scrollContainer.clientHeight - scrollBar.offsetHeight));
-      document.body.style.pointerEvents = 'none';
-      scrollBar.style.pointerEvents = 'auto';
-    };
-    const handleMouseMove = (e) => {
-      if (!isDragging) return;
-      const deltaY = e.clientY - startY;
-      const maxScrollBarTop = scrollContainer.clientHeight - scrollBar.offsetHeight;
-      const newScrollBarTop = scrollBarStartY + deltaY;
-      if (newScrollBarTop >= maxScrollBarTop) {
-        const scrollPercentage = maxScrollBarTop / maxScrollBarTop;
-        scrollContainer.scrollTop = scrollPercentage * (scrollContainer.scrollHeight - scrollContainer.clientHeight);
-      }
-      if (newScrollBarTop <= 0) {
-        const scrollPercentage = 0 / maxScrollBarTop;
-        scrollContainer.scrollTop = scrollPercentage * (scrollContainer.scrollHeight - scrollContainer.clientHeight);
-      }
-      if (newScrollBarTop >= 0 && newScrollBarTop <= maxScrollBarTop) {
-        const scrollPercentage = newScrollBarTop / maxScrollBarTop;
-        scrollContainer.scrollTop = scrollPercentage * (scrollContainer.scrollHeight - scrollContainer.clientHeight);
-      }
-    };
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.body.style.pointerEvents = 'auto';
-    };
-    scrollBar.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    scrollContainer.addEventListener('scroll', handleScroll);
-    return () => {
-      scrollBar.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      scrollContainer.removeEventListener('scroll', handleScroll);
-    };
-  }, [isDragging, startY, scrollBarStartY]);
+    setSearchInputValue(inputValue)
+  }, [inputValue])
+
+useEffect(()=>{
+  searchBarBlur(setFocus, Search.current)
+  Search.current.value = ""
+},[currentChat])
 
   return (
-    <Box className='no-select' sx={{ height: "100%", backgroundColor: "transparent",borderWidth:" 0 1px 0 0", borderColor:"rgba(231,231,231,255)", borderStyle:"solid" }}>
+    <Box className='no-select'
+    sx={{
+      height: "100%",
+      minWidth: "500px",
+      backgroundColor: "transparent",
+      borderWidth: " 0 1px 0 0",
+      borderColor: theme.palette.primary.border,
+      borderStyle: "solid"
+    }}>
       <Box sx={{
         width: '500px',
         height: '60px',
-        backgroundColor: 'white',
+        backgroundColor: theme.palette.primary.background2,
         display: 'flex',
         justifyContent: 'space-between ',
         alignItems: 'center',
         gap: "20px",
         padding: '0 10px'
       }}>
-        <IconButton >
-          <MenuIcon sx={{ fontSize: '30px' }} />
+        <IconButton onClick={()=>{setOpenDrawer(true) }} >
+          <MenuIcon sx={{ fontSize: '30px' ,color:theme.palette.primary.text ,'&:hover': {color:theme.palette.secondary.textHover }}} />
         </IconButton>
         <Box style={{ position: 'relative', width: '100%' }}>
           <IconButton
@@ -96,20 +56,22 @@ const SideBar = ({ children }) => {
               transform: 'translateY(-50%)',
               display: focus ? 'flex' : "none"
             }}>
-            <CloseIcon sx={{ fontSize: '20px' }} />
+            <CloseIcon sx={{ fontSize: '20px', color:theme.palette.primary.text ,'&:hover': {color:theme.palette.secondary.textHover } }} />
           </IconButton>
           <input
-            onFocus={() => { setFocus(true) }}
-            onBlur={() => { setFocus(false); Search.current.value != '' ? Search.current.focus() : null }}
+            onFocus={() => { searchBarFocus(setFocus) }}
+            onBlur={() => { searchBarBlur(setFocus, Search.current) }}
+            onChange={(e) => {setInputValue(e.target.value)}}
             placeholder='search'
             ref={Search}
             style={{
               width: '100%',
               height: '38px',
-              backgroundColor: focus ? "rgba(241,241,241, 0)" : "rgba(241,241,241,1)",
-              color: "rgb(110, 127, 128)",
+              backgroundColor: focus ? theme.palette.secondary.focusSearchBG : theme.palette.primary.searchBG,
+              color:theme.palette.primary.whiteText ,
               borderRadius: "20px",
-              border: '2px solid rgb(241,241,241)',
+              border: '2px solid ',
+              borderColor:theme.palette.primary.searchBG,
               outline: 'none',
               padding: '8px 5px 10px 12px',
               fontSize: '16px',
@@ -122,29 +84,22 @@ const SideBar = ({ children }) => {
             padding:0 0 0 4px ;
             line-height: 120% ;
             opacity: 0.8;
+            color:${theme.palette.primary.text}
           }
         `}
           </style>
         </Box>
       </Box>
-      <Box className="scroll-container"
-      ref={scrollContainerRef}
-      sx={{ backgroundColor: "transparent",
-      display: "flex",
-      flexDirection: "column",
-      height: "calc(100% - 60px)",
-      position: "relative",
-      }}>
-        <div className="scroll-bar" 
-        ref={scrollBarRef}
-        style={{ position: 'absolute',
-        right: "4px",
-        top: top,
-        width: '4px',
-        height: height,
-        borderRadius: "10px",
-        backgroundColor:"rgba(0, 0, 0, 0.5)",
-        }}></div>
+      <Box
+        ref={scrollContainerRef}
+        sx={{
+          backgroundColor: theme.palette.primary.background2,
+          display: "flex",
+          flexDirection: "column",
+          height: "calc(100% - 60px)",
+          width: "500px"
+        }}>
+        {scrollContainerRef?.current && <ScrollBar container={scrollContainerRef?.current} />}
         {children}
       </Box>
     </Box>
