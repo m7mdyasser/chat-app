@@ -11,6 +11,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import SentimentSatisfiedAltRoundedIcon from '@mui/icons-material/SentimentSatisfiedAltRounded';
+import ScrollBar from "../Matrial-UI/ScrollBar";
 
 const ChatBox = () => {
   const { user } = useContext(AuthContext);
@@ -20,9 +21,12 @@ const ChatBox = () => {
   const [showPicker, setShowPicker] = useState(false)
   const [emoji, setEmoji] = useState('')
   const scroll = useRef()
-  const scrollContainerRef = useRef(null);
   const textareaRef = useRef(null);
   const theme = useTheme();
+// useEffect(()=>{
+//   console.log(loadingMessages);
+
+// },[loadingMessages])
 
 
   useEffect(() => {
@@ -111,29 +115,50 @@ const ChatBox = () => {
 
 
 
-
-
-      <Stack direction={"column-reverse"} sx={{ flex: "1", padding: "0 80px 10px ", width: "100%", backgroundColor: theme.palette.primary.background, overflowY: "scroll", overflowX: "hidden" }}>
-
-        <Stack gap={1}>
-          {messages &&
-            messages.map((message, index) => (
-              <Stack
-                key={index}
-                ref={index === messages.length - 1 ? scroll : null}
-                sx={{ alignItems: message?.senderId === user?._id ? "flex-end " : "flex-start", }}>
-                <Stack sx={{ maxWidth: "400px", backgroundColor: message?.senderId === user?._id ? theme.palette.primary.selfMessage : theme.palette.primary.nonSelfMessage, color: theme.palette.primary.main, padding: "4px 14px", borderRadius: "10px", alignItems: message?.senderId === user?._id ? "flex-end" : "flex-start" }}>
-                  <Box className="long-text" sx={{ fontSize: "16px", display: "flex", overflow: "hidden", flexWrap: "wrap", width: "100%", }}  >{message.text}</Box>
-                  <style>{`.long-text {word-break: break-all;}`}</style>
-                  <Box sx={{ fontSize: "12px", lineHeight: "1", color: theme.palette.primary.text }}  >{Date(message.createdAt)}</Box>
-                </Stack>
-
-              </Stack>
-            )
-            )}
+      <Box  sx={{ width: "100%", height: "calc(100% - 94px )" }}>
+        <Stack
+          direction={"column-reverse"}
+          sx={{
+            padding: "0 80px 10px ",
+            width: "100%",
+            height: "100%",
+            backgroundColor: theme.palette.primary.background,
+          }}>
+          <ScrollBar mode={theme.palette.mode} dir={"reverse"} />
+          <Stack gap={1}>
+            {messages &&
+              messages.map((message, index) => {
+                return (
+                  <Stack
+                    key={index}
+                    ref={index === messages.length - 1 ? scroll : null}
+                    sx={{ alignItems: message?.senderId === user?._id ? "flex-end " : "flex-start", }}>
+                    <Stack sx={{
+                      maxWidth: "400px",
+                      backgroundColor: message?.senderId === user?._id ? theme.palette.primary.selfMessage : theme.palette.primary.nonSelfMessage,
+                      color: theme.palette.primary.main,
+                      padding: "4px 14px",
+                      borderRadius: "10px",
+                      alignItems: message?.senderId === user?._id ? "flex-end" : "flex-start"
+                    }}>
+                      <Box className="long-text"
+                        sx={{
+                          fontSize: "16px",
+                          display: "flex",
+                          overflow: "hidden",
+                          flexWrap: "wrap",
+                          width: "100%",
+                        }}>{message.text}</Box>
+                      <style>{`.long-text {word-break: break-all;}`}</style>
+                      <Box sx={{ fontSize: "12px", lineHeight: "1", color: theme.palette.primary.text }}  >{Date(message.createdAt)}</Box>
+                    </Stack>
+                  </Stack>
+                )
+              }
+              )}
+          </Stack>
         </Stack>
-      </Stack>
-
+      </Box>
 
 
 
@@ -165,8 +190,8 @@ const ChatBox = () => {
             resize: "none",
             overflow: "hidden",
           }} />
-            <style>
-            {`
+        <style>
+          {`
           textarea::placeholder {
             padding:0 0 0 4px ;
             line-height: 120% ;
@@ -174,20 +199,21 @@ const ChatBox = () => {
             color:${theme.palette.primary.text}
           }
         `}
-          </style>
+        </style>
         <IconButton
           onClick={() => sendTextMessage(textMessage, user, currentChat._id, setTextMessage)}
-          sx={{ position: "absolute", top: "50%", right: "10px", transform: 'translateY(-50%)',color:theme.palette.primary.sendIcon  }} >
+          sx={{ position: "absolute", top: "50%", right: "10px", transform: 'translateY(-50%)', color: theme.palette.primary.sendIcon }} >
           <SendRoundedIcon />
         </IconButton>
         <IconButton
           onClick={() => setShowPicker(!showPicker)}
-          sx={{ position: "absolute",
-          top: "50%",
-          left: "0",
-          transform: 'translateY(-50%)',
-          color: theme.palette.primary.text,
-          '&:hover': { color: theme.palette.secondary.textHover}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "0",
+            transform: 'translateY(-50%)',
+            color: theme.palette.primary.text,
+            '&:hover': { color: theme.palette.secondary.textHover }
           }} >
           <SentimentSatisfiedAltRoundedIcon />
         </IconButton>

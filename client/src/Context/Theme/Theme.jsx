@@ -28,19 +28,36 @@ export const ThemeContextProvider = ({ children }) => {
           palette: {
             mode: "light",
             primary: {
-              main: "#303f9f",
+              main: "#000",
+              background: "rgba(135,180,137,1)",
+              background2: "rgba(255,255,255,1)",
+              text: "rgba(153,153,153,1)",
+              selfMessage: "rgba(239,253,222,1)",
+              notification: "rgba(84,180,64,1)",
+              lighterText: "rgba(84,180,64,1)",
+              searchBG: "rgba(241,241,241,1)",
+              sendIcon: "rgba(82,172,64,1)",
+              navBarBG: "rgba(241,241,241,1)",
+              nonSelfMessage: "rgba(255,255,255,1)",
+              whiteText: "rgba(255,255,255,1)",
+              border:grey[300]
+
             },
             secondary: {
-              main: grey[800],
+              main: "#fff",
+              textHover: "rgba(138,138,138,1)",
+              background2Hover: "rgba(241,241,241,1)",
+              focusSearchBG:"rgba(255,255,255,1)"
+
             },
             third: {
-              main: "#4553d1"
+              background2Clicked: "rgba(82,172,64,1)",
+              onlineDot: "rgba(255,255,255,1)",
+
             },
             neutral: {
-              main: "#043baa80",
             },
             favColor: {
-              main: grey[200],
             },
           },
         };
@@ -61,7 +78,7 @@ export const ThemeContextProvider = ({ children }) => {
               navBarBG: "rgba(31,41,54,1)",
               nonSelfMessage: "rgba(24,37,51,1)",
               whiteText: "rgba(255,255,255,1)",
-              border:"rgba(30,38,48,1)"
+              border:grey[800]
 
             },
             secondary: {

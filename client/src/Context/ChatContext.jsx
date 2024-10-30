@@ -23,6 +23,7 @@ export const ChatContextProvider = ({ children, user }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [displayUserChats, setDisplayUserChats] = useState(true)
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [chatPageLoading , setChatPageLoading]= useState(false)
 
 
   // ========================================================================Socket.io ==================================================================================
@@ -281,7 +282,9 @@ export const ChatContextProvider = ({ children, user }) => {
         setSearchInputValue,
         searchedPotentialChats,
         setOpenDrawer,
-        openDrawer
+        openDrawer,
+        setChatPageLoading,
+        chatPageLoading
       }}>
       {children}
     </ChatContext.Provider>

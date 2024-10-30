@@ -15,14 +15,7 @@ padding:2px 5px 0 15px ;
   transition:  0.3s;
 }
 
-.notifcationmessage:hover {
-  color: rgb(0, 223, 223);
-  padding-left: 25px;
-}
-.notifcationmessage:not(:last-child) {
-  border-bottom: 1px solid #bbb;
-}
-
+::-webkit-scrollbar {display: none;}
 
 
 

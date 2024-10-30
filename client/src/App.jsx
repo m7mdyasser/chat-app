@@ -31,3 +31,7 @@ function App() {
   )
 }
 export default App 
+// cd  client 
+// npm run dev
+// cd server
+// npm run start:dev

@@ -7,9 +7,9 @@ import { ChatContext } from '../../Context/ChatContext';
 
 
 const SideBar = ({ children }) => {
-  const { searchBarFocus, searchBarBlur, setSearchInputValue ,currentChat ,setOpenDrawer } = useContext(ChatContext)
+  const { searchBarFocus, searchBarBlur, setSearchInputValue, currentChat, setOpenDrawer, chatPageLoading } = useContext(ChatContext)
   const [focus, setFocus] = useState(false)
-  const [inputValue , setInputValue ] = useState("")
+  const [inputValue, setInputValue] = useState("")
   const scrollContainerRef = useRef(null);
   const Search = useRef(null)
   const theme = useTheme();
@@ -18,21 +18,19 @@ const SideBar = ({ children }) => {
     setSearchInputValue(inputValue)
   }, [inputValue])
 
-useEffect(()=>{
-  searchBarBlur(setFocus, Search.current)
-  Search.current.value = ""
-},[currentChat])
+  useEffect(() => {
+    searchBarBlur(setFocus, Search.current)
+    Search.current.value = ""
+  }, [currentChat])
 
   return (
     <Box className='no-select'
-    sx={{
-      height: "100%",
-      minWidth: "500px",
-      backgroundColor: "transparent",
-      borderWidth: " 0 1px 0 0",
-      borderColor: theme.palette.primary.border,
-      borderStyle: "solid"
-    }}>
+      sx={{
+        height: "100%",
+        minWidth: "500px",
+        backgroundColor: "transparent",
+
+      }}>
       <Box sx={{
         width: '500px',
         height: '60px',
@@ -41,10 +39,13 @@ useEffect(()=>{
         justifyContent: 'space-between ',
         alignItems: 'center',
         gap: "20px",
-        padding: '0 10px'
+        padding: '0 10px',
+        borderWidth: " 0 1px 0 0",
+        borderColor: theme.palette.primary.border,
+        borderStyle: "solid"
       }}>
-        <IconButton onClick={()=>{setOpenDrawer(true) }} >
-          <MenuIcon sx={{ fontSize: '30px' ,color:theme.palette.primary.text ,'&:hover': {color:theme.palette.secondary.textHover }}} />
+        <IconButton onClick={() => { setOpenDrawer(true) }} >
+          <MenuIcon sx={{ fontSize: '30px', color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }} />
         </IconButton>
         <Box style={{ position: 'relative', width: '100%' }}>
           <IconButton
@@ -56,22 +57,22 @@ useEffect(()=>{
               transform: 'translateY(-50%)',
               display: focus ? 'flex' : "none"
             }}>
-            <CloseIcon sx={{ fontSize: '20px', color:theme.palette.primary.text ,'&:hover': {color:theme.palette.secondary.textHover } }} />
+            <CloseIcon sx={{ fontSize: '20px', color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }} />
           </IconButton>
           <input
             onFocus={() => { searchBarFocus(setFocus) }}
             onBlur={() => { searchBarBlur(setFocus, Search.current) }}
-            onChange={(e) => {setInputValue(e.target.value)}}
+            onChange={(e) => { setInputValue(e.target.value) }}
             placeholder='search'
             ref={Search}
             style={{
               width: '100%',
               height: '38px',
               backgroundColor: focus ? theme.palette.secondary.focusSearchBG : theme.palette.primary.searchBG,
-              color:theme.palette.primary.whiteText ,
+              color: theme.palette.primary.whiteText,
               borderRadius: "20px",
               border: '2px solid ',
-              borderColor:theme.palette.primary.searchBG,
+              borderColor: theme.palette.primary.searchBG,
               outline: 'none',
               padding: '8px 5px 10px 12px',
               fontSize: '16px',
@@ -90,17 +91,23 @@ useEffect(()=>{
           </style>
         </Box>
       </Box>
-      <Box
-        ref={scrollContainerRef}
-        sx={{
-          backgroundColor: theme.palette.primary.background2,
-          display: "flex",
-          flexDirection: "column",
-          height: "calc(100% - 60px)",
-          width: "500px"
-        }}>
-        {scrollContainerRef?.current && <ScrollBar container={scrollContainerRef?.current} />}
-        {children}
+      <Box className="homos" sx={{ height: "calc(100% - 60px)", width: "100%" }}>
+        <Box
+          ref={scrollContainerRef}
+          sx={{
+            backgroundColor: theme.palette.primary.background2,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "500px",
+            borderWidth: " 0 1px 0 0",
+            borderColor: theme.palette.primary.border,
+            borderStyle: "solid",
+
+          }}>
+          <ScrollBar mode={theme.palette.mode} start={chatPageLoading}  />
+          {children}
+        </Box>
       </Box>
     </Box>
   )
