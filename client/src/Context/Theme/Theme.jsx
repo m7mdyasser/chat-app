@@ -21,6 +21,7 @@ export const ThemeContextProvider = ({ children }) => {
     { name: "Protanopia", id: "Protanopia", icon: <RemoveRedEyeOutlinedIcon /> },
   ];
 
+
   const getDesignTokens = (themeId) => {
     switch (themeId) {
       case "light":
@@ -186,6 +187,7 @@ export const ThemeContextProvider = ({ children }) => {
     }
   };
   const theme = createTheme(getDesignTokens(colorTheme));
+
 
   return (
     <ThemeContext.Provider

@@ -12,10 +12,12 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import SentimentSatisfiedAltRoundedIcon from '@mui/icons-material/SentimentSatisfiedAltRounded';
 import ScrollBar from "../Matrial-UI/ScrollBar";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ChatBox = () => {
   const { user } = useContext(AuthContext);
-  const { currentChat, messages, isMessagesLoading, sendTextMessage } = useContext(ChatContext);
+  const { currentChat, messages, isMessagesLoading, sendTextMessage, setCurrentChat } = useContext(ChatContext);
+  const [recipientUserOn, setRecipientUserOn] = useState(null)
   const { recipientUser } = useFetchRecipientUser(currentChat, user);
   const [textMessage, setTextMessage] = useState("");
   const [showPicker, setShowPicker] = useState(false)
@@ -23,11 +25,10 @@ const ChatBox = () => {
   const scroll = useRef()
   const textareaRef = useRef(null);
   const theme = useTheme();
-// useEffect(()=>{
-//   console.log(loadingMessages);
 
-// },[loadingMessages])
-
+useEffect(()=>{
+  setRecipientUserOn(recipientUser)
+},[recipientUser])
 
   useEffect(() => {
     setTextMessage(textMessage + emoji)
@@ -50,10 +51,18 @@ const ChatBox = () => {
     })
   }, [])
 
-  if (!recipientUser) {
+  if (!recipientUserOn) {
     return (
-      <Stack sx={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-        <Typography style={{ textAlign: "center", width: "100%" }}>
+      <Stack sx={{
+        height: "100%",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        [theme.breakpoints.down("md")]: {
+          display: "none",
+        }
+      }}>
+        <Typography style={{ textAlign: "center", width: "100%", color: theme.palette.primary.main }}>
           No conversation selected yet
         </Typography>
       </Stack>
@@ -61,7 +70,12 @@ const ChatBox = () => {
   }
   if (isMessagesLoading) {
     return (
-      <Stack sx={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
+      <Stack sx={{
+        height: "100%",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
         <Typography style={{ textAlign: "center", width: "100%" }}>
           Loading Chat...
         </Typography>
@@ -69,32 +83,62 @@ const ChatBox = () => {
     );
   }
 
-
-
-
-
   return (
 
 
-    <Stack sx={{ height: "100%", width: "100%", alignItems: "flex-start" }}  >
+    <Stack sx={{
+      height: "100%",
+      display: currentChat ? "flex" : "none",
+      width: "100%",
+      alignItems: "flex-start",
+      [theme.breakpoints.down("xl")]: {
+        minWidth: "700px",
+      },
+      [theme.breakpoints.down("lg")]: {
+        minWidth: "500px",
+      },
+      [theme.breakpoints.down("md")]: {
+        minWidth: "100%",
+      }
+    }}  >
 
 
 
-      <Box sx={{
-        height: "60px",
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: theme.palette.primary.background2,
-        borderWidth: " 0 0 1px 0",
-        borderColor: theme.palette.primary.border,
-        borderStyle: "solid"
-      }}>
-        <Box sx={{ ml: 2, display: "flex", flexDirection: "column" }}>
-          <Typography sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>{recipientUser.name}</Typography>
-          <Typography sx={{ color: theme.palette.primary.text }}>last seen recently</Typography>
-        </Box>
+      <Stack
+        direction={"row"}
+        sx={{
+          height: "60px",
+          width: "100%",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: theme.palette.primary.background2,
+          borderWidth: " 0 0 1px 0",
+          borderColor: theme.palette.primary.border,
+          borderStyle: "solid"
+        }}>
+
+        <Stack direction={"row"} sx={{ ml: 2, alignItems: "center" }}>
+          <ArrowBackIcon
+            onClick={() => { setCurrentChat(null) , setRecipientUserOn(null) }}
+            sx={{
+              display: "none",
+              mr: 1,
+              cursor: "pointer",
+              color: theme.palette.primary.text,
+              '&:hover': {
+                color: theme.palette.secondary.textHover,
+              },
+              [theme.breakpoints.down("md")]: {
+                display: "block"
+              },
+            }} />
+          <Stack >
+            <Typography sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>{recipientUser.name}</Typography>
+            <Typography sx={{ color: theme.palette.primary.text }}>last seen recently</Typography>
+          </Stack>
+        </Stack>
+
+
         <Stack direction="row-reverse" spacing={1}>
           <IconButton sx={{ color: theme.palette.primary.text, '&:hover': { color: theme.palette.secondary.textHover } }} >
             <MoreVertIcon />
@@ -109,22 +153,22 @@ const ChatBox = () => {
             <SearchIcon />
           </IconButton>
         </Stack>
-      </Box>
+      </Stack>
 
 
 
 
 
-      <Box  sx={{ width: "100%", height: "calc(100% - 94px )" }}>
+      <Box sx={{ width: "100%", height: "calc(100% - 94px )", }}>
         <Stack
           direction={"column-reverse"}
           sx={{
-            padding: "0 80px 10px ",
+            padding: "10px 50px  ",
             width: "100%",
             height: "100%",
             backgroundColor: theme.palette.primary.background,
           }}>
-          <ScrollBar mode={theme.palette.mode} dir={"reverse"} />
+          <ScrollBar mode={theme.palette.mode} dir={"reverse"} breakpoint={600}  />
           <Stack gap={1}>
             {messages &&
               messages.map((message, index) => {

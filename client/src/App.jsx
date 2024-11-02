@@ -9,16 +9,25 @@ import { AuthContext } from './Context/AuthContext';
 import { ChatContextProvider } from './Context/ChatContext';
 import { ThemeContext } from './Context/Theme/Theme'
 import { ThemeProvider } from "@mui/material";
+import { useRef } from 'react';
+import { useEffect } from 'react';
 function App() {
   const { user } = useContext(AuthContext)
   const { theme } = useContext(ThemeContext)
-  // console.log(theme.palette.primary.background);
+  const divref = useRef()
   document.body.style.backgroundColor = theme.palette.primary.background
+  
+  useEffect(()=>{
+  if(divref.current){
+  divref.current.parentNode.style.height = "100vh"
+  }
+  },[])
+  console.log(window.innerWidth);
   return (
     <ChatContextProvider user={user} >
         <ThemeProvider theme={theme} >
         <NavBar />
-        <div style={{ height: "calc(100% - 35px) " }}>
+        <div ref={divref} style={{height: "calc(100% - 35px)"}}>
           <Routes>
             <Route path='/' element={user ? <Chat /> : <Login />} />
             <Route path='/login' element={user ? <Chat /> : <Login />} />

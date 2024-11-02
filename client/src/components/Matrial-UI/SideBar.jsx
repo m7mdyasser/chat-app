@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from '@mui/material';
+import { Box, IconButton, Stack, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -6,8 +6,9 @@ import ScrollBar from './ScrollBar';
 import { ChatContext } from '../../Context/ChatContext';
 
 
+
 const SideBar = ({ children }) => {
-  const { searchBarFocus, searchBarBlur, setSearchInputValue, currentChat, setOpenDrawer, chatPageLoading } = useContext(ChatContext)
+  const { searchBarFocus, searchBarBlur, setSearchInputValue, currentChat, setOpenDrawer, chatPageLoading, displayUserChats } = useContext(ChatContext)
   const [focus, setFocus] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const scrollContainerRef = useRef(null);
@@ -28,11 +29,20 @@ const SideBar = ({ children }) => {
       sx={{
         height: "100%",
         minWidth: "500px",
+        maxWidth: "500px",
         backgroundColor: "transparent",
+        [theme.breakpoints.down("lg")]: {
+          minWidth: "400px",
+          maxWidth: "400px",
+        },
+        [theme.breakpoints.down("md")]: {
+          display: currentChat ? "none" : "block",
+          minWidth: "100%",
+          maxWidth: "100%",
+        }
 
       }}>
       <Box sx={{
-        width: '500px',
         height: '60px',
         backgroundColor: theme.palette.primary.background2,
         display: 'flex',
@@ -69,7 +79,7 @@ const SideBar = ({ children }) => {
               width: '100%',
               height: '38px',
               backgroundColor: focus ? theme.palette.secondary.focusSearchBG : theme.palette.primary.searchBG,
-              color: theme.palette.primary.whiteText,
+              color: theme.palette.primary.main,
               borderRadius: "20px",
               border: '2px solid ',
               borderColor: theme.palette.primary.searchBG,
@@ -91,23 +101,20 @@ const SideBar = ({ children }) => {
           </style>
         </Box>
       </Box>
-      <Box className="homos" sx={{ height: "calc(100% - 60px)", width: "100%" }}>
-        <Box
+      <Box sx={{ height: "calc(100% - 60px)", }}>
+        <Stack
           ref={scrollContainerRef}
           sx={{
             backgroundColor: theme.palette.primary.background2,
-            display: "flex",
-            flexDirection: "column",
             height: "100%",
-            width: "500px",
+            width: '100%',
             borderWidth: " 0 1px 0 0",
             borderColor: theme.palette.primary.border,
             borderStyle: "solid",
-
           }}>
-          <ScrollBar mode={theme.palette.mode} start={chatPageLoading}  />
+          <ScrollBar mode={theme.palette.mode} start={chatPageLoading} breakpoint={600} />
           {children}
-        </Box>
+        </Stack>
       </Box>
     </Box>
   )

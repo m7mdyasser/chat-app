@@ -4,11 +4,10 @@ import UserChat from "../components/Chat/UserChat";
 import { AuthContext } from "../Context/AuthContext";
 import PotentialChats from "../components/Chat/PotentialChats";
 import ChatBox from "../components/Chat/ChatBox";
-import { Box,  Typography, useTheme } from "@mui/material";
+import { Box,  Typography, useTheme , Stack} from "@mui/material";
 import SideBar from "../components/Matrial-UI/SideBar";
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import { Stack } from "react-bootstrap";
 import avatar from '../assets/vector.jpg'
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import Switch from '@mui/material/Switch';
@@ -27,7 +26,7 @@ const Chat = () => {
       <Drawer open={openDrawer} onClose={() => { setOpenDrawer(false) }} >
         <Box sx={{ width: 250, backgroundColor: theme.palette.primary.background2,height:"100%" }} role="presentation" >
           {/*  onClick={() => { setOpenDrawer(false) }} */}
-          <Stack gap={3} style={{ padding: "20px 20px  10px ", alignItems: "center" }}>
+          <Stack gap={3} sx={{ padding: "20px 20px  10px ", alignItems: "center" }}>
             <Box sx={{}}>
               <img src={avatar} height="50px" style={{borderRadius:"50%"}} />
             </Box>
@@ -58,8 +57,8 @@ const Chat = () => {
 
   return (
     <Box sx={{ display: "flex", height: "100%" }}>
+      <SideBar  >
       {leftDrawer}
-      <SideBar >
         <PotentialChats />
         {userChats?.length < 1 ? null : (
           <Box sx={{ display: displayUserChats ? "block" : "none" }} >
@@ -74,6 +73,7 @@ const Chat = () => {
             })}
           </Box>
         )}
+        
       </SideBar>
       <ChatBox />
 

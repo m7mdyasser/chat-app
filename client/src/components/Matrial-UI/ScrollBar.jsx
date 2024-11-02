@@ -8,18 +8,40 @@ import { useEffect, useRef, useState } from "react";
 // start والاخرى تعبر عن اكتمال تحميل الصفحه واسمها 
 // scroll والثالثه تعبر عن اتجاه ال
 // flex-direction: column-reverse ويتم استخدام الثالثه فى حلات استخدام 
-const ScrollBar = ({ mode, start, dir }) => {
+const ScrollBar = ({ mode, start, dir , breakpoint}) => {
   const colorMode = mode || "light";
   const direction = dir || "normal";
-  const loadingDone = start === false ? false : true 
+  const point = breakpoint || 1 ;
+  const loadingDone = start === false ? false : true;
+  const [display, setDisplay] = useState("none")
   const [top, setTop] = useState(`0`)
   const [bottom, setBottom] = useState(`0`)
   const [height, setHeight] = useState('0')
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
+  const [pageWidth, setPageWidth] = useState(window.innerWidth);
+  const [ displaypar , setDisplaypar] = useState(true)
   const [scrollBarStartY, setScrollBarStartY] = useState(0);
   const scrollBarRef = useRef(null);
   const scrollContainerRef = useRef(null);
+
+console.log(point);
+console.log(pageWidth);
+
+  useEffect(() => {
+    if(pageWidth <= point ){
+    setDisplaypar(false)
+    }else {
+      setDisplaypar(true)
+    }
+    const handleResize = () => {
+      setPageWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [pageWidth])
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -31,7 +53,7 @@ const ScrollBar = ({ mode, start, dir }) => {
       parentElement.style.overflowY = "scroll"
       parentElement.className = `${parentElement.className} scroll-container `
       if (loadingDone) {
-        parentElement.scrollHeight / parentElement?.clientHeight <= 1 ? null : setHeight((parentElement?.clientHeight / parentElement?.scrollHeight) * 100 + '%');
+        parentElement.scrollHeight / parentElement?.clientHeight <= 1 ? null : (setHeight((parentElement?.clientHeight / parentElement?.scrollHeight) * 100 + '%'), setDisplay("Block"));
         if (direction === "normal") {
           const firstScrollPosition = parentElement.scrollTop;
           const scrollHeight = scrollContainer.scrollHeight
@@ -136,14 +158,15 @@ const ScrollBar = ({ mode, start, dir }) => {
         }
       }
     }
-  }, [loadingDone , isDragging, startY, scrollBarStartY ]);
+  }, [loadingDone, isDragging, startY, scrollBarStartY,]);
 
   return (
     <div
       ref={scrollContainerRef}
       style={{
+        display:displaypar ? display  : "none"  ,
         height: "calc(100% - 4px)",
-        width: "4px",
+        width: "5px",
         top: "2px",
         right: "4px",
         borderRadius: "10px",
@@ -158,11 +181,12 @@ const ScrollBar = ({ mode, start, dir }) => {
           bottom: direction === "reverse" ? bottom : null,
           top: direction === "normal" ? top : null,
           position: 'absolute',
-          width: "4px",
+          width: "5px",
           borderRadius: "10px",
           backgroundColor: colorMode === "light" ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)",
         }}>
       </div>
+      {/* كود style فى حالة استخدام هذا الكمبوننت فى مشروع اخر  */}
       <style>{`.scroll-container::-webkit-scrollbar {display: none;}`}</style>
     </div>
   )

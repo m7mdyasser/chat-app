@@ -30,6 +30,8 @@ export const ChatContextProvider = ({ children, user }) => {
   useEffect(() => {
     // الاتصال بالسيرفر
     const Socket = io("http://localhost:3000"); // العنوان يجب أن يتطابق مع السيرفر
+    // "https://chat-app-production-2.up.railway.app"
+    // "http://localhost:3000"
     setSocket(Socket)
     // console.log("==============================================");
     // console.log("Connecting to Socket.io ");
@@ -284,7 +286,8 @@ export const ChatContextProvider = ({ children, user }) => {
         setOpenDrawer,
         openDrawer,
         setChatPageLoading,
-        chatPageLoading
+        chatPageLoading,
+        setCurrentChat
       }}>
       {children}
     </ChatContext.Provider>
